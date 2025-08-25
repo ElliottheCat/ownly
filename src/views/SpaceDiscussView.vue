@@ -17,6 +17,7 @@
 
         <template #default="{ item, index, active }">
           <DynamicScrollerItem
+            v-if="item"
             :item="item"
             :active="active"
             :data-index="index"
@@ -197,8 +198,9 @@ function isAgentMessage(item: IChatMessage | AgentMessage): item is AgentMessage
 
 /** Skip the header if the user is the same and the message is within a minute */
 function skipHeader(item: IChatMessage | AgentMessage, index: number) {
-  if (index === 0) return false;
-  const prev = items.value![index - 1];
+  if (index === 0 || !item || !items.value) return false;
+  const prev = items.value[index - 1];
+  if (!prev) return false;
   return prev.user === item.user && item.ts - prev.ts < 1000 * 60;
 }
 
